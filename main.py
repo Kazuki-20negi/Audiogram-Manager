@@ -28,6 +28,7 @@ def japanese_calendar_converter(text):
     # 抽出できなかったら終わり
     if date is None:
         print("Cannot convert to western year")
+        return None
 
     # 年を変換
     for era, startYear in eraDict.items():
