@@ -12,6 +12,8 @@ pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
 Image_=Image.open("test.png")
 test_date=pytesseract.image_to_string(Image_,lang="jpn+eng")
-pattern=r"{\d}*/{\d}*/{\d}*"
+pattern_=r"\d*/\d*/\d*"
+test_result=re.findall(pattern_,test_date)
 
 print(test_date)
+print(test_result)
