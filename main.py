@@ -2,6 +2,7 @@ import os
 import re
 import pytesseract
 from PIL import Image
+from datetime import datetime
 from dotenv import load_dotenv
 # .envファイルを読み込む
 load_dotenv()
@@ -24,8 +25,15 @@ image_gray.save("test_gray.png")
 #読み取り
 custom_config=r"--psm 6"
 test_date=pytesseract.image_to_string(image_gray,lang="jpn+eng", config=custom_config)
-pattern_=r"\d*/\d*/\d*"
+
+pattern_west=r"(?:\d{4}\s*[/年]\s*\d{1,2}\s*[/月]\s*\d{1,2}\s*日*)"
+pattern_jp = r"(?:(?:令和|平成)\s*\d{1,2}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日*)"
+pattern_=rf"{pattern_west}|{pattern_jp}"
 test_result=re.findall(pattern_,test_date)
 
 print(test_date)
 print(test_result)
+
+result_date=str(test_result[1]).replace(" ","")
+result_date=result_date.replace("年","/")
+print(result_date)
