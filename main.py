@@ -4,6 +4,8 @@ import pytesseract
 from PIL import Image
 import datetime
 import unicodedata
+import json
+from pathlib import Path
 from dotenv import load_dotenv
 # .envファイルを読み込む
 load_dotenv()
@@ -40,8 +42,10 @@ def japanese_calendar_converter(text):
     
     # date型に変換して返す
     return datetime.date(year, int(date.group("month")), int(date.group("day")))
-def date_detect():
-    image_file=Image.open("test.png")
+
+
+def date_detect(image_path):
+    image_file=Image.open("image_path")
     width, height = image_file.size
     new_size=(width*2, height*2)
     image_file=image_file.resize(new_size, Image.Resampling.LANCZOS)
@@ -79,5 +83,15 @@ def date_detect():
             return datetime.datetime.strptime(result_date, "%Y-%m-%d").date()
         except:
             return None
+
+
+def main():
+    scan_dir=Path("./scans")
+    output_file=Path("./date.json")
+    result_json=[]
+
+    for image_path in scan_dir.glob("*.ping"):
+        print(f"Processing: {image_path.name}...")
+        result_json.append(date_detect(image_path))
 
 print(date_detect())
