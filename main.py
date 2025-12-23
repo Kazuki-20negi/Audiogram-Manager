@@ -40,38 +40,44 @@ def japanese_calendar_converter(text):
     
     # date型に変換して返す
     return datetime.date(year, int(date.group("month")), int(date.group("day")))
+def date_detect():
+    image_file=Image.open("test.png")
+    width, height = image_file.size
+    new_size=(width*2, height*2)
+    image_file=image_file.resize(new_size, Image.Resampling.LANCZOS)
 
-image_file=Image.open("test.png")
-width, height = image_file.size
-new_size=(width*2, height*2)
-image_file=image_file.resize(new_size, Image.Resampling.LANCZOS)
+    #前処理2値化 本番で戻す
+    #image_gray=image_file.convert("L")
+    #threshold=180
+    #image_gray=image_gray.point(lambda x: 0 if x<threshold else 255)
 
-#前処理2値化 本番で戻す
-#image_gray=image_file.convert("L")
-#threshold=180
-#image_gray=image_gray.point(lambda x: 0 if x<threshold else 255)
+    #デバッグ用、本番では消す
+    #image_gray.save("test_gray.png")
+    image_gray=Image.open("test_gray.png")
 
-#デバッグ用、本番では消す
-#image_gray.save("test_gray.png")
-image_gray=Image.open("test_gray.png")
+    #読み取り
+    custom_config=r"--psm 6"
+    test_date=pytesseract.image_to_string(image_gray,lang="jpn+eng", config=custom_config)
 
-#読み取り
-custom_config=r"--psm 6"
-test_date=pytesseract.image_to_string(image_gray,lang="jpn+eng", config=custom_config)
+    #正規表現パターン
+    pattern_west=r"(?:\d{4}\s*[/年]\s*\d{1,2}\s*[/月]\s*\d{1,2}\s*日*)"
+    pattern_jp = r"(?:(?:令和|平成)\s*\d{1,2}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日*)"
+    pattern_=rf"{pattern_west}|{pattern_jp}"
+    test_result=re.findall(pattern_,test_date)
 
-#正規表現パターン
-pattern_west=r"(?:\d{4}\s*[/年]\s*\d{1,2}\s*[/月]\s*\d{1,2}\s*日*)"
-pattern_jp = r"(?:(?:令和|平成)\s*\d{1,2}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日*)"
-pattern_=rf"{pattern_west}|{pattern_jp}"
-test_result=re.findall(pattern_,test_date)
+    #print(test_date)
+    #print(test_result)
+    result_date=str(test_result[3]).replace(" ","")
+    result_date=result_date.strip()
+    #print(result_date)
+    if "平成" in result_date or "令和" in result_date:
+        result_date=japanese_calendar_converter(result_date)
+        return result_date
+    else:
+        try:
+            result_date=result_date.translate(str.maketrans({"年":"-","月":"-","日":None,"/":"-"}))
+            return datetime.datetime.strptime(result_date, "%Y-%m-%d").date()
+        except:
+            return None
 
-print(test_date)
-print(test_result)
-
-result_date=str(test_result[0]).replace(" ","")
-if "平成" in result_date or "令和" in result_date:
-    result_date=japanese_calendar_converter(result_date)
-else:
-    result_date=result_date.translate(str.maketrans({"年":"-","月":"-","日":None,"/":"-"}))
-
-print(result_date)
+print(date_detect())
