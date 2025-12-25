@@ -45,7 +45,7 @@ def japanese_calendar_converter(text):
 
 
 def date_detect(image_path):
-    image_file=Image.open("image_path")
+    image_file=Image.open(image_path)
     width, height = image_file.size
     new_size=(width*2, height*2)
     image_file=image_file.resize(new_size, Image.Resampling.LANCZOS)
@@ -90,8 +90,20 @@ def main():
     output_file=Path("./date.json")
     result_json=[]
 
-    for image_path in scan_dir.glob("*.ping"):
+    for image_path in scan_dir.glob("*.png"):
         print(f"Processing: {image_path.name}...")
-        result_json.append(date_detect(image_path))
+        exam_date=str(date_detect(image_path))
+        need_review=False
+        if exam_date is None:
+            need_review=True
+        result_data={
+            "filename":image_path.name,
+            "exam_date":exam_date,
+            "need_review":need_review,
+        }
+        result_json.append(result_data)
+    
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(result_json,f,indent=4,ensure_ascii=False)
 
-print(date_detect())
+main()
