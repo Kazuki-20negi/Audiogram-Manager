@@ -6,6 +6,9 @@ import datetime
 import unicodedata
 import json
 from pathlib import Path
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+import time
 from dotenv import load_dotenv
 # .envファイルを読み込む
 load_dotenv()
@@ -84,6 +87,8 @@ def date_detect(image_path):
         except:
             return None
 
+def start_watching():
+    pass
 
 def main():
     scan_dir=Path("./scans")
@@ -106,5 +111,5 @@ def main():
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(result_json,f,indent=4,ensure_ascii=False)
 
-if __name__=="__main__"
+if __name__=="__main__":
     main()
