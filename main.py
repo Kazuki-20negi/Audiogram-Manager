@@ -15,6 +15,31 @@ load_dotenv()
 TESSERACT_PATH=os.getenv("TESSERACT_PATH")
 pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
+
+class ImageHandler(FileSystemEventHandler):
+    """
+    フォルダに何か変更があったら呼ばれるクラス
+    """
+    def on_created(self, event):
+        # フォルダじゃなくてファイルが作られたときだけ反応する
+        if event.is_directory:
+            return
+        
+        filepath = event.src_path
+        filename = os.path.basename(filepath)
+        
+        # pngファイルじゃなかったら無視
+        if not filename.endswith(".png"):
+            return
+
+        print(f"検知しました: {filename}")
+        
+        # ★ここに 今までの date_detect() などの処理を書く
+        # 注意：スキャン直後は書き込み中でファイルがロックされていることがあるので
+        # time.sleep(1) などを入れるのがコツです
+
+
+
 # 各年号の元年を定義
 eraDict = {
     "昭和": 1926,
