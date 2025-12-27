@@ -168,24 +168,6 @@ def start_watching():
     observer.join()
 
 def main():
-    """
-    output_file=Path("./date.json")
-    scan_dir=Path("./scans")
-    result_json=[]
-
-    for image_path in scan_dir.glob("*.png"):
-        print(f"Processing: {image_path.name}...")
-        exam_date=str(date_detect(image_path))
-        need_review=False
-        if exam_date is None:
-            need_review=True
-        result_data={
-            "filename":image_path.name,
-            "exam_date":exam_date,
-            "need_review":need_review,
-        }
-        result_json.append(result_data)
-    """
     start_watching()
 
 if __name__=="__main__":
