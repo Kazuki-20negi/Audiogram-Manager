@@ -1,0 +1,17 @@
+[
+    {
+        "filename": "test.png",
+        "exam_date": "2025-12-22",
+        "need_review": false
+    },
+    {
+        "filename": "test_gray1.png",
+        "exam_date": "2025-12-22",
+        "need_review": false
+    },
+    {
+        "filename": "test1.png",
+        "exam_date": "2025-12-22",
+        "need_review": false
+    }
+]
