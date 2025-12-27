@@ -20,6 +20,9 @@ class ImageHandler(FileSystemEventHandler):
     """
     フォルダに何か変更があったら呼ばれるクラス
     """
+    def __init__(self):
+        self.result_class=[]
+
     def on_created(self, event):
         # フォルダじゃなくてファイルが作られたときだけ反応する
         if event.is_directory:
@@ -33,10 +36,16 @@ class ImageHandler(FileSystemEventHandler):
             return
 
         print(f"検知しました: {filename}")
-        
-        # ★ここに 今までの date_detect() などの処理を書く
-        # 注意：スキャン直後は書き込み中でファイルがロックされていることがあるので
-        # time.sleep(1) などを入れるのがコツです
+        exam_date=str(date_detect(filename))
+        need_review=False
+        if exam_date is None:
+            need_review=True
+        result_data={
+            "filename":filename.name,
+            "exam_date":exam_date,
+            "need_review":need_review,
+        }
+        self.result_class.append(result_data)
 
 
 
@@ -113,11 +122,32 @@ def date_detect(image_path):
             return None
 
 def start_watching():
-    pass
+    target_dir = "./scans"
+    
+    # 監視員（Observer）とイベント処理係（Handler）を用意
+    observer = Observer()
+    event_handler = ImageHandler()
+    
+    # 監視員に「場所」と「係」をセット
+    observer.schedule(event_handler, target_dir, recursive=False)
+    
+    # 監視開始
+    observer.start()
+    print(f"フォルダ監視を開始しました: {target_dir}")
+    print("Ctrl+C で終了します")
+
+    try:
+        while True:
+            time.sleep(1) # 1秒ごとに待機（CPUを休ませるため）
+    except KeyboardInterrupt:
+        observer.stop() # Ctrl+C されたら止める
+
+    observer.join()
 
 def main():
-    scan_dir=Path("./scans")
     output_file=Path("./date.json")
+    """
+    scan_dir=Path("./scans")
     result_json=[]
 
     for image_path in scan_dir.glob("*.png"):
@@ -132,9 +162,10 @@ def main():
             "need_review":need_review,
         }
         result_json.append(result_data)
-    
+    """
+    start_watching()
     with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(result_json,f,indent=4,ensure_ascii=False)
+        json.dump(ImageHandler.result_class,f,indent=4,ensure_ascii=False)
 
 if __name__=="__main__":
     main()
