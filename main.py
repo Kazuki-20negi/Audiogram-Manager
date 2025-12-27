@@ -15,14 +15,12 @@ load_dotenv()
 TESSERACT_PATH=os.getenv("TESSERACT_PATH")
 pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
+OUTPUT_FILE = Path("./date.json")
 
 class ImageHandler(FileSystemEventHandler):
     """
     フォルダに何か変更があったら呼ばれるクラス
     """
-    def __init__(self):
-        self.result_class=[]
-
     def on_created(self, event):
         # フォルダじゃなくてファイルが作られたときだけ反応する
         if event.is_directory:
@@ -36,16 +34,41 @@ class ImageHandler(FileSystemEventHandler):
             return
 
         print(f"検知しました: {filename}")
-        exam_date=str(date_detect(filename))
-        need_review=False
-        if exam_date is None:
-            need_review=True
-        result_data={
-            "filename":filename.name,
-            "exam_date":exam_date,
-            "need_review":need_review,
+        time.sleep(1)
+        exam_date_obj = date_detect(filepath)
+        if exam_date_obj:
+            exam_date_str = str(exam_date_obj)
+            need_review = False
+            print(f"日付特定: {exam_date_str}")
+        else:
+            exam_date_str = None
+            need_review = True
+            print("日付特定失敗 -> 要確認")
+        new_data = {
+            "filename": filename,
+            "exam_date": exam_date_str,
+            "need_review": need_review,
         }
-        self.result_class.append(result_data)
+        self.save_to_json(new_data)
+
+    def save_to_json(self, new_data):
+        current_data = []
+        
+        # 1. 既存のJSONがあれば読み込む
+        if OUTPUT_FILE.exists():
+            try:
+                with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
+                    current_data = json.load(f)
+            except json.JSONDecodeError:
+                current_data = []
+
+        # 2. 新しいデータを追加
+        current_data.append(new_data)
+
+        # 3. ファイルに書き戻す
+        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+            json.dump(current_data, f, indent=4, ensure_ascii=False)
+        print(f"データを保存しました ({OUTPUT_FILE})")
 
 
 
@@ -80,7 +103,6 @@ def japanese_calendar_converter(text):
     # date型に変換して返す
     return datetime.date(year, int(date.group("month")), int(date.group("day")))
 
-
 def date_detect(image_path):
     image_file=Image.open(image_path)
     width, height = image_file.size
@@ -108,7 +130,7 @@ def date_detect(image_path):
 
     #print(test_date)
     #print(test_result)
-    result_date=str(test_result[3]).replace(" ","")
+    result_date=str(test_result[0]).replace(" ","")
     result_date=result_date.strip()
     #print(result_date)
     if "平成" in result_date or "令和" in result_date:
@@ -145,8 +167,8 @@ def start_watching():
     observer.join()
 
 def main():
-    output_file=Path("./date.json")
     """
+    output_file=Path("./date.json")
     scan_dir=Path("./scans")
     result_json=[]
 
@@ -164,8 +186,6 @@ def main():
         result_json.append(result_data)
     """
     start_watching()
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(ImageHandler.result_class,f,indent=4,ensure_ascii=False)
 
 if __name__=="__main__":
     main()
