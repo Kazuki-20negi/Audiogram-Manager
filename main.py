@@ -70,7 +70,18 @@ class ImageHandler(FileSystemEventHandler):
             json.dump(current_data, f, indent=4, ensure_ascii=False)
         print(f"データを保存しました ({OUTPUT_FILE})")
 
-
+def process_one_file(filepath):
+    """
+    1つの画像ファイルのパスを受け取り、
+    OCR -> 結果判定 -> JSON保存 までを一貫して行う関数
+    """
+    filename = os.path.basename(filepath)
+    print(f"処理開始: {filename}")
+    
+    # 1. OCR実行 (date_detect を呼ぶ)
+    # 2. 結果判定 (Noneチェック)
+    # 3. JSON保存 (save_to_json 相当の処理)
+    #    ※ save_to_json もクラスから外に出すか、この関数内で呼べるようにする必要があります
 
 # 各年号の元年を定義
 eraDict = {
