@@ -63,12 +63,13 @@ class ImageHandler(FileSystemEventHandler):
             exam_date_str = str(exam_date_obj)
             need_review = False
             print(f"日付特定: {exam_date_str}")
+            result_filename=rename_file(filepath, exam_date_str)
         else:
             exam_date_str = None
             need_review = True
             print("日付特定失敗 -> 要確認")
         new_data = {
-            "filename": filename,
+            "filename": result_filename,
             "exam_date": exam_date_str,
             "need_review": need_review,
         }

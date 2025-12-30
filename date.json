@@ -13,5 +13,15 @@
         "filename": "test1.png",
         "exam_date": "2025-12-22",
         "need_review": false
+    },
+    {
+        "filename": "test.png",
+        "exam_date": "2025-12-22",
+        "need_review": false
+    },
+    {
+        "filename": "2025-12-22.png",
+        "exam_date": "2025-12-22",
+        "need_review": false
     }
 ]
