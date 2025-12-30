@@ -16,6 +16,29 @@ TESSERACT_PATH=os.getenv("TESSERACT_PATH")
 pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
 OUTPUT_FILE = Path("./date.json")
+def rename_file(original_path, date_str):
+    #ファイル名を日付にリネームし、ファイル名をreturnする
+    directry_original=os.path.dirname(original_path)
+    extension=os.path.splitext(original_path)[1]
+    new_filename=f"{date_str}{extension}"
+    new_path=os.path.join(directry_original, new_filename)
+
+    #重複回避
+    counter=1
+    while os.path.exists(new_path):
+        new_filename=f"{date_str}_{counter}{extension}"
+        new_path=os.path.join(directry_original, new_filename)
+        counter+=1
+    
+    #リネーム実行
+    try:
+        os.rename(original_path, new_path)
+        print("リネーム成功")
+        return new_filename
+    except OSError as e:
+        print(f"リネーム失敗{e}")
+        return os.path.basename(original_path)
+
 
 class ImageHandler(FileSystemEventHandler):
     """
