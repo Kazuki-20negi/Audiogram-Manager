@@ -59,6 +59,7 @@ class ImageHandler(FileSystemEventHandler):
         print(f"検知しました: {filename}")
         time.sleep(1)
         exam_date_obj = date_detect(filepath)
+        result_filename=filename
         if exam_date_obj:
             exam_date_str = str(exam_date_obj)
             need_review = False
