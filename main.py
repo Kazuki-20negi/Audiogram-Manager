@@ -9,6 +9,7 @@ from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
+import requests
 from dotenv import load_dotenv
 # .envファイルを読み込む
 load_dotenv()
@@ -209,6 +210,10 @@ def start_watching():
         observer.stop() # Ctrl+C されたら止める
 
     observer.join()
+
+def upload_to_server(filepath, date_str, need_review):
+    
+    pass
 
 def main():
     start_watching()
