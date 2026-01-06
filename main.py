@@ -17,7 +17,12 @@ pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
 OUTPUT_FILE = Path("./date.json")
 def rename_file(original_path, date_str):
-    #ファイル名を日付にリネームし、ファイル名をreturnする
+    """
+    ファイル名を日付にリネームし、ファイル名をreturnする
+    Args:
+        original_path: リネーム対象のファイルのパス
+        date_str: リネームする日付
+    """
     directry_original=os.path.dirname(original_path)
     extension=os.path.splitext(original_path)[1]
     new_filename=f"{date_str}{extension}"
@@ -58,7 +63,7 @@ class ImageHandler(FileSystemEventHandler):
 
         print(f"検知しました: {filename}")
         time.sleep(1)
-        exam_date_obj = date_detect(filepath)
+        exam_date_obj = date_detect(filepath) #OCRして日付を取得
         result_filename=filename
         if exam_date_obj:
             exam_date_str = str(exam_date_obj)
@@ -77,6 +82,11 @@ class ImageHandler(FileSystemEventHandler):
         self.save_to_json(new_data)
 
     def save_to_json(self, new_data):
+        """
+        OCR結果などを含む新規データをjsonにして既存ファイルの末尾に追加する
+        Args:
+            new_data: 新規データ
+        """
         current_data = []
         
         # 1. 既存のJSONがあれば読み込む
@@ -103,6 +113,10 @@ eraDict = {
 }
 
 def japanese_calendar_converter(text):
+    """
+    元号を含む日付を西暦に変換する    
+    :param text:元号を含む日付
+    """
     # 正規化
     normalized_text = unicodedata.normalize("NFKC", text)
 
@@ -127,6 +141,12 @@ def japanese_calendar_converter(text):
     return datetime.date(year, int(date.group("month")), int(date.group("day")))
 
 def date_detect(image_path):
+    """
+    OCRで日付を検出する
+    
+    Args:
+        image_path: 対象画像のパス
+    """
     image_file=Image.open(image_path)
     width, height = image_file.size
     new_size=(width*2, height*2)
