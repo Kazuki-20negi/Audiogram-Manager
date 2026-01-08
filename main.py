@@ -81,6 +81,7 @@ class ImageHandler(FileSystemEventHandler):
             "need_review": need_review,
         }
         self.save_to_json(new_data)
+        upload_to_server(new_data,"test_gray.png")
 
     def save_to_json(self, new_data):
         """
@@ -211,9 +212,25 @@ def start_watching():
 
     observer.join()
 
-def upload_to_server(filepath, date_str, need_review):
-    
-    pass
+def upload_to_server(new_data,filepath):
+    url="http://httpbin.org/post"
+    payload=new_data
+    print(f"ペイロード：{payload}")# デバッグ
+    with open(filepath, 'rb') as f:
+        files = {
+            "original_file": f
+        }
+        
+        # 3. 送信
+        try:
+            response = requests.post(url, data=payload, files=files)
+            response.raise_for_status() # エラーなら例外を起こす
+            print(f"送信成功: {response.status_code}")
+            print(response.json()) # サーバーからの返事を見る,デバッグ
+            return True
+        except requests.exceptions.RequestException as e:
+            print(f"送信失敗: {e}")
+            return False
 
 def main():
     start_watching()

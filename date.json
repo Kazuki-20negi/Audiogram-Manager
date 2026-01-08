@@ -28,5 +28,20 @@
         "filename": "エラーチェック用.png",
         "exam_date": null,
         "need_review": true
+    },
+    {
+        "filename": "2025-12-22_1.png",
+        "exam_date": "2025-12-22",
+        "need_review": false
+    },
+    {
+        "filename": "2025-12-22.png",
+        "exam_date": "2025-12-22",
+        "need_review": false
+    },
+    {
+        "filename": "2025-12-22_1.png",
+        "exam_date": "2025-12-22",
+        "need_review": false
     }
 ]
