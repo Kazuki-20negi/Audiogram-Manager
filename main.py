@@ -190,7 +190,7 @@ def date_detect(image_path):
             return None
 
 def start_watching():
-    target_dir = "./scans"
+    target_dir = "./real_scans"
     
     # 監視員（Observer）とイベント処理係（Handler）を用意
     observer = Observer()

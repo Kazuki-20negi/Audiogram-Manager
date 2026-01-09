@@ -3,5 +3,10 @@
         "filename": "test.png",
         "exam_date": "2025-12-22",
         "need_review": false
+    },
+    {
+        "filename": "2026-01-09.png",
+        "exam_date": "2026-01-09",
+        "need_review": false
     }
 ]
