@@ -215,7 +215,7 @@ def start_watching():
 def upload_to_server(new_data,filepath):
     api_key=os.getenv("AUDIOGRAM_API_KEY")
     url="http://httpbin.org/post"
-    #url="http://httpbin.org/audiograms/upload"
+    #url="http://honban.com/audiograms/upload"
 
     headers={
         "X-Api-Key":api_key,
