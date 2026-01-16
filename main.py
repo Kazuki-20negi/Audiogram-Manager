@@ -81,7 +81,7 @@ class ImageHandler(FileSystemEventHandler):
             "need_review": need_review,
         }
         self.save_to_json(new_data)
-        upload_to_server(new_data,"test_gray.png")
+        upload_to_server(new_data,"./real_scans/"+result_filename)
 
     def save_to_json(self, new_data):
         """
@@ -214,7 +214,7 @@ def start_watching():
 
 def upload_to_server(new_data,filepath):
     api_key=os.getenv("AUDIOGRAM_API_KEY")
-    url="http://httpbin.org/post"
+    url="http://127.0.0.1:8000/audiograms/upload/"
     #url="http://honban.com/audiograms/upload"
 
     headers={
