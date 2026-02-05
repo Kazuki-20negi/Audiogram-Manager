@@ -16,7 +16,7 @@ load_dotenv()
 TESSERACT_PATH=os.getenv("TESSERACT_PATH")
 pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
-OUTPUT_FILE = Path("./date.json")
+OUTPUT_FILE = Path("./audiogram_log.json")
 def rename_file(original_path, date_str):
     """
     ファイル名を日付にリネームし、ファイル名をreturnする
